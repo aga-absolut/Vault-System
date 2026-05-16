@@ -8,6 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+// registerHandler handles user registration form submission.
 func (m *model) registerHandler() tea.Cmd {
 	if m.form.focused == 0 {
 		m.switchAuth()
@@ -29,6 +30,7 @@ func (m *model) registerHandler() tea.Cmd {
 	}
 }
 
+// loginHandler handles user login form submission.
 func (m *model) loginHandler() tea.Cmd {
 	if m.form.focused == 0 {
 		m.switchAuth()
@@ -50,6 +52,7 @@ func (m *model) loginHandler() tea.Cmd {
 	}
 }
 
+// setDataHandler handles adding new user data.
 func (m *model) setDataHandler() tea.Cmd {
 	if m.form.focused < 2 {
 		m.switchData()
@@ -72,6 +75,7 @@ func (m *model) setDataHandler() tea.Cmd {
 	}
 }
 
+// updateDataHandler handles updating existing user data.
 func (m *model) updateDataHandler() tea.Cmd {
 	if m.form.focused < 2 {
 		m.switchData()
@@ -94,6 +98,7 @@ func (m *model) updateDataHandler() tea.Cmd {
 	}
 }
 
+// getDataHandler handles retrieving user data by metadata.
 func (m *model) getDataHandler() tea.Cmd {
 	return func() tea.Msg {
 		meta := m.form.meta.Value()
@@ -110,6 +115,7 @@ func (m *model) getDataHandler() tea.Cmd {
 	}
 }
 
+// deleteDataHandler handles deleting user data.
 func (m *model) deleteDataHandler() tea.Cmd {
 	return func() tea.Msg {
 		meta := m.form.meta.Value()
@@ -126,6 +132,7 @@ func (m *model) deleteDataHandler() tea.Cmd {
 	}
 }
 
+// getListDataHandler handles retrieving the list of stored metadata.
 func (m *model) getListDataHandler() tea.Cmd {
 	return func() tea.Msg {
 		records, err := m.client.GetListMeta(context.Background())

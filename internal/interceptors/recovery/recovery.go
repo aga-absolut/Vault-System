@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// UnaryServerInterceptor recovers from panics during gRPC request handling.
 func UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 		defer func() {

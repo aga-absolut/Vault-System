@@ -2,6 +2,7 @@ package errs
 
 import "errors"
 
+// Application error definitions.
 var (
 	ErrIncorrectLoginOrPassword = errors.New("неверный логин или пароль")
 	ErrLoginAlreadyUsed         = errors.New("логин уже используется")

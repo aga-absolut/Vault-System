@@ -16,12 +16,16 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// Client provides methods for interacting with the VaultSystem gRPC server.
 type Client struct {
 	client pb.VaultSystemClient
 	conn   *grpc.ClientConn
-	Token  string
+
+	// Token stores the authentication token for authorized requests.
+	Token string
 }
 
+// NewClient creates a new gRPC client connection to the server.
 func NewClient(serverAddr string) *Client {
 	conn, err := grpc.NewClient(serverAddr, grpc.WithTransportCredentials(
 		insecure.NewCredentials(),
@@ -37,6 +41,7 @@ func NewClient(serverAddr string) *Client {
 	}
 }
 
+// Register creates a new user account and stores the received auth token.
 func (c *Client) Register(ctx context.Context, userName, password string) error {
 	resp, err := c.client.Register(ctx, &pb.RegisterRequest{Name: userName, Password: password})
 	if err != nil {
@@ -61,6 +66,7 @@ func (c *Client) Register(ctx context.Context, userName, password string) error 
 	return nil
 }
 
+// Login authenticates the user and stores the received auth token.
 func (c *Client) Login(ctx context.Context, userName, password string) error {
 	resp, err := c.client.Login(ctx, &pb.LoginRequest{Name: userName, Password: password})
 	if err != nil {
@@ -79,6 +85,7 @@ func (c *Client) Login(ctx context.Context, userName, password string) error {
 	return nil
 }
 
+// SetData sends a new record to the server for storage.
 func (c *Client) SetData(ctx context.Context, recordType, recordMeta string, recordData []byte) error {
 	record := &models.Record{
 		Type: recordType,
@@ -101,6 +108,7 @@ func (c *Client) SetData(ctx context.Context, recordType, recordMeta string, rec
 	return nil
 }
 
+// GetData retrieves a record from the server by metadata key.
 func (c *Client) GetData(ctx context.Context, meta string) (*models.Record, error) {
 	ctx = withToken(ctx, c.Token)
 	resp, err := c.client.GetData(ctx, &pb.GetDataRequest{Meta: meta})
@@ -120,6 +128,7 @@ func (c *Client) GetData(ctx context.Context, meta string) (*models.Record, erro
 	return record, nil
 }
 
+// GetListMeta returns a list of all stored record metadata keys.
 func (c *Client) GetListMeta(ctx context.Context) ([]string, error) {
 	ctx = withToken(ctx, c.Token)
 	resp, err := c.client.GetListMeta(ctx, &emptypb.Empty{})
@@ -135,6 +144,7 @@ func (c *Client) GetListMeta(ctx context.Context) ([]string, error) {
 	return resp.Data, nil
 }
 
+// UpdateData updates an existing record on the server.
 func (c *Client) UpdateData(ctx context.Context, recordType, recordMeta string, recordData []byte) error {
 	record := &models.Record{
 		Type: recordType,
@@ -156,6 +166,7 @@ func (c *Client) UpdateData(ctx context.Context, recordType, recordMeta string, 
 	return nil
 }
 
+// DeleteData removes a record from the server by metadata key.
 func (c *Client) DeleteData(ctx context.Context, meta string) error {
 	ctx = withToken(ctx, c.Token)
 	_, err := c.client.DeleteData(ctx, &pb.DeleteDataRequest{Meta: meta})
@@ -172,10 +183,12 @@ func (c *Client) DeleteData(ctx context.Context, meta string) error {
 	return nil
 }
 
+// Close closes the gRPC client connection.
 func (c *Client) Close() error {
 	return c.conn.Close()
 }
 
+// withToken attaches the authentication token to the outgoing request context.
 func withToken(ctx context.Context, Token string) context.Context {
 	if Token == "" {
 		return ctx

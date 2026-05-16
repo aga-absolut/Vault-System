@@ -14,6 +14,8 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
+// Storage defines database operations for users and records.
+//
 //go:generate mockgen -source=postgres.go -destination=mocks/postgres_mock.go -package=mocks
 type Storage interface {
 	AddUser(ctx context.Context, name, password string) error
@@ -26,11 +28,13 @@ type Storage interface {
 	Close()
 }
 
+// storage implements PostgreSQL database operations.
 type storage struct {
 	DB     *pgxpool.Pool
 	config *config.Config
 }
 
+// NewStorage creates a new PostgreSQL storage instance.
 func NewStorage(config *config.Config) Storage {
 	pgx, err := pgxpool.New(context.Background(), config.DatabaseDSN)
 	if err != nil {
@@ -43,6 +47,7 @@ func NewStorage(config *config.Config) Storage {
 	}
 }
 
+// AddUser saves a new user in the database.
 func (s *storage) AddUser(ctx context.Context, name, password string) error {
 	query := `INSERT INTO users (username, password_hash) VALUES($1, $2)`
 
@@ -56,6 +61,7 @@ func (s *storage) AddUser(ctx context.Context, name, password string) error {
 	return nil
 }
 
+// CheckUser retrieves the user's password hash from the database.
 func (s *storage) CheckUser(ctx context.Context, name string) (string, error) {
 	var passwordHash string
 	query := `SELECT password_hash FROM users WHERE username = $1`
@@ -70,6 +76,7 @@ func (s *storage) CheckUser(ctx context.Context, name string) (string, error) {
 	return passwordHash, nil
 }
 
+// SetData stores encrypted user record data.
 func (s *storage) SetData(ctx context.Context, recType, recMeta, userName string, data []byte) error {
 	query := `INSERT INTO records (record_type, record_meta, record_data, username) 
 	          VALUES($1, $2, $3, $4)`
@@ -84,6 +91,7 @@ func (s *storage) SetData(ctx context.Context, recType, recMeta, userName string
 	return nil
 }
 
+// GetData retrieves user record data from the database.
 func (s *storage) GetData(ctx context.Context, userName, meta string) (*models.Record, error) {
 	var r models.Record
 	query := `SELECT record_id, record_type, record_meta, record_data, username FROM records 
@@ -99,6 +107,7 @@ func (s *storage) GetData(ctx context.Context, userName, meta string) (*models.R
 	return &r, nil
 }
 
+// UpdateData updates existing user record data.
 func (s *storage) UpdateData(ctx context.Context, recType, recMeta, userName string, data []byte) error {
 	query := `UPDATE records SET record_type = $1, record_data = $2 WHERE record_meta = $3 AND username = $4`
 	result, err := s.DB.Exec(ctx, query, recType, data, recMeta, userName)
@@ -113,6 +122,7 @@ func (s *storage) UpdateData(ctx context.Context, recType, recMeta, userName str
 	return nil
 }
 
+// GetListMeta returns a list of user record metadata.
 func (s *storage) GetListMeta(ctx context.Context, userName string) ([]string, error) {
 	query := `SELECT record_meta FROM records WHERE username = $1`
 	rows, err := s.DB.Query(ctx, query, userName)
@@ -136,6 +146,7 @@ func (s *storage) GetListMeta(ctx context.Context, userName string) ([]string, e
 	return records, nil
 }
 
+// DeleteData removes user record data from the database.
 func (s *storage) DeleteData(ctx context.Context, userName, meta string) error {
 	query := `DELETE FROM records WHERE record_meta = $1 AND username = $2`
 	result, err := s.DB.Exec(ctx, query, meta, userName)
@@ -149,6 +160,7 @@ func (s *storage) DeleteData(ctx context.Context, userName, meta string) error {
 	return nil
 }
 
+// Close closes the database connection pool.
 func (s *storage) Close() {
 	s.DB.Close()
 }

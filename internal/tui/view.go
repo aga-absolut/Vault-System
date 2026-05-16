@@ -6,6 +6,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+// View renders the current TUI screen.
 func (m model) View() string {
 	var s strings.Builder
 
@@ -112,10 +113,11 @@ func (m model) View() string {
 		return s.String()
 	}
 
-	// Меню
+	// Renders the main menu.
 	instruction := "↑↓ или j/k — перемещение | Enter — выполнить | ctrl+c — выход"
 	s.WriteString(lipgloss.NewStyle().Foreground(lipgloss.Color("#c9c9c9")).Render(instruction) + "\n\n")
 
+	// menu
 	for i, item := range m.menuItems {
 		if i == m.cursor {
 			s.WriteString(selectedStyle.Render(" → "+item) + "\n")

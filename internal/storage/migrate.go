@@ -10,9 +10,12 @@ import (
 	"github.com/pressly/goose/v3"
 )
 
+// MigrationsFS stores embedded SQL migration files.
+//
 //go:embed migrations
 var MigrationsFS embed.FS
 
+// MustInitMigrations applies all pending database migrations.
 func MustInitMigrations(cfg *config.Config, logger *logger.Logger) {
 	logger.Info("Starting database migrations...")
 
@@ -41,6 +44,7 @@ func MustInitMigrations(cfg *config.Config, logger *logger.Logger) {
 	}
 }
 
+// MustDownMigrations rolls back the latest database migration.
 func MustDownMigrations(cfg *config.Config, logger *logger.Logger) {
 	logger.Info("Starting database rollback...")
 
@@ -56,7 +60,6 @@ func MustDownMigrations(cfg *config.Config, logger *logger.Logger) {
 		panic(err)
 	}
 
-	// Откатываем ОДНУ последнюю миграцию
 	if err := goose.Down(db, "migrations"); err != nil {
 		logger.Errorw("Migration down failed", "error", err)
 		panic(err)

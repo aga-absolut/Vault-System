@@ -15,6 +15,7 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+// VaultSystem implements the gRPC server handlers.
 type VaultSystem struct {
 	pb.UnimplementedVaultSystemServer
 	token              token.Provider
@@ -22,6 +23,7 @@ type VaultSystem struct {
 	credentialsService credentials.Service
 }
 
+// NewVaultSystem creates a new VaultSystem handler instance.
 func NewVaultSystem(token token.Provider, authService auth.Service, credentialsService credentials.Service) *VaultSystem {
 	return &VaultSystem{
 		token:              token,
@@ -30,6 +32,7 @@ func NewVaultSystem(token token.Provider, authService auth.Service, credentialsS
 	}
 }
 
+// Register handles user registration requests.
 func (s *VaultSystem) Register(ctx context.Context, in *pb.RegisterRequest) (*pb.RegisterResponse, error) {
 	token, err := s.authService.RegisterUser(ctx, in.Name, in.Password)
 	if err != nil {
@@ -45,6 +48,7 @@ func (s *VaultSystem) Register(ctx context.Context, in *pb.RegisterRequest) (*pb
 	return &pb.RegisterResponse{Token: token}, nil
 }
 
+// Login handles user authentication requests.
 func (s *VaultSystem) Login(ctx context.Context, in *pb.LoginRequest) (*pb.LoginResponse, error) {
 	token, err := s.authService.LoginUser(ctx, in.Name, in.Password)
 	if err != nil {
@@ -57,6 +61,7 @@ func (s *VaultSystem) Login(ctx context.Context, in *pb.LoginRequest) (*pb.Login
 	return &pb.LoginResponse{Token: token}, nil
 }
 
+// SetData saves user data on the server.
 func (s *VaultSystem) SetData(ctx context.Context, in *pb.SetDataRequest) (*emptypb.Empty, error) {
 	userName, err := s.getUserName(ctx)
 	if err != nil {
@@ -77,6 +82,7 @@ func (s *VaultSystem) SetData(ctx context.Context, in *pb.SetDataRequest) (*empt
 	return &emptypb.Empty{}, nil
 }
 
+// GetData retrieves user data by metadata key.
 func (s *VaultSystem) GetData(ctx context.Context, in *pb.GetDataRequest) (*pb.GetDataResponse, error) {
 	userName, err := s.getUserName(ctx)
 	if err != nil {
@@ -94,6 +100,7 @@ func (s *VaultSystem) GetData(ctx context.Context, in *pb.GetDataRequest) (*pb.G
 	return &pb.GetDataResponse{Data: convert.ToProtoRecord(data)}, nil
 }
 
+// GetListMeta returns a list of user record metadata.
 func (s *VaultSystem) GetListMeta(ctx context.Context, in *emptypb.Empty) (*pb.GetListMetaResponse, error) {
 	userName, err := s.getUserName(ctx)
 	if err != nil {
@@ -108,6 +115,7 @@ func (s *VaultSystem) GetListMeta(ctx context.Context, in *emptypb.Empty) (*pb.G
 	return &pb.GetListMetaResponse{Data: list}, nil
 }
 
+// DeleteData removes user data by metadata key.
 func (s *VaultSystem) DeleteData(ctx context.Context, in *pb.DeleteDataRequest) (*emptypb.Empty, error) {
 	userName, err := s.getUserName(ctx)
 	if err != nil {
@@ -123,6 +131,7 @@ func (s *VaultSystem) DeleteData(ctx context.Context, in *pb.DeleteDataRequest) 
 	return &emptypb.Empty{}, nil
 }
 
+// UpdateData updates existing user data.
 func (s *VaultSystem) UpdateData(ctx context.Context, in *pb.UpdateDataRequest) (*emptypb.Empty, error) {
 	userName, err := s.getUserName(ctx)
 	if err != nil {
@@ -138,6 +147,7 @@ func (s *VaultSystem) UpdateData(ctx context.Context, in *pb.UpdateDataRequest) 
 	return &emptypb.Empty{}, nil
 }
 
+// getUserName extracts the authenticated username from context.
 func (s *VaultSystem) getUserName(ctx context.Context) (string, error) {
 	username, ok := s.token.UserNameFromContext(ctx)
 	if !ok {

@@ -11,17 +11,20 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Service defines authentication service methods.
 type Service interface {
 	RegisterUser(context.Context, string, string) (string, error)
 	LoginUser(context.Context, string, string) (string, error)
 }
 
+// service implements authentication business logic.
 type service struct {
 	log   *logger.Logger
 	db    postgres.Storage
 	token token.Provider
 }
 
+// NewService creates a new authentication service instance.
 func NewService(log *logger.Logger, db postgres.Storage, token token.Provider) Service {
 	return &service{
 		log:   log,
@@ -30,6 +33,7 @@ func NewService(log *logger.Logger, db postgres.Storage, token token.Provider) S
 	}
 }
 
+// RegisterUser creates a new user and returns a JWT token.
 func (s *service) RegisterUser(ctx context.Context, name, password string) (string, error) {
 	if name == "" || password == "" {
 		return "", errs.ErrIncorrectLoginOrPassword
@@ -62,6 +66,7 @@ func (s *service) RegisterUser(ctx context.Context, name, password string) (stri
 	return tokenStr, nil
 }
 
+// LoginUser authenticates a user and returns a JWT token.
 func (s *service) LoginUser(ctx context.Context, name, password string) (string, error) {
 	hashPassword, err := s.db.CheckUser(ctx, name)
 	if err != nil {

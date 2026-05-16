@@ -1,5 +1,6 @@
 package tui
 
+// switchAuth switches focus between username and password fields.
 func (m *model) switchAuth() {
 	if m.form.focused == 0 {
 		m.form.username.Blur()
@@ -12,6 +13,7 @@ func (m *model) switchAuth() {
 	}
 }
 
+// switchData switches focus between metadata, type, and data fields.
 func (m *model) switchData() {
 	switch m.form.focused {
 	case 0:
@@ -29,6 +31,7 @@ func (m *model) switchData() {
 	}
 }
 
+// resetAuthForm clears and resets authentication form fields.
 func (m *model) resetAuthForm() {
 	m.form.username.SetValue("")
 	m.form.password.SetValue("")
@@ -37,6 +40,7 @@ func (m *model) resetAuthForm() {
 	m.form.password.Blur()
 }
 
+// resetData clears and resets record data form fields.
 func (m *model) resetData() {
 	m.form.meta.SetValue("")
 	m.form.recordType.SetValue("")

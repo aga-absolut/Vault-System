@@ -10,6 +10,7 @@ import (
 	"github.com/caarlos0/env"
 )
 
+// Config stores application configuration values.
 type Config struct {
 	Address       string        `env:"ADDRESS" envDefault:":3200"`
 	DatabaseDSN   string        `env:"DATABASE_DSN"`
@@ -18,6 +19,7 @@ type Config struct {
 	EncryptionKey string        `json:"encryption_key"`
 }
 
+// MustLoadConfig loads configuration from environment variables, flags, and config file.
 func MustLoadConfig() *Config {
 	cfg := &Config{}
 
@@ -36,6 +38,7 @@ func MustLoadConfig() *Config {
 	return cfg
 }
 
+// ParseConfigFromFile reads secret configuration values from a JSON file.
 func ParseConfigFromFile(name string, cfg *Config) error {
 	file, err := os.Open(name)
 	if err != nil {

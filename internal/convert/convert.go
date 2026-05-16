@@ -5,6 +5,7 @@ import (
 	pb "github.com/aga-absolut/Vault-System/proto/vault_system"
 )
 
+// ToRecord converts a protobuf record into an internal model record.
 func ToRecord(pbRecord *pb.Record) *models.Record {
 	if pbRecord == nil {
 		return nil
@@ -18,6 +19,7 @@ func ToRecord(pbRecord *pb.Record) *models.Record {
 	}
 }
 
+// ToProtoRecord converts an internal model record into a protobuf record.
 func ToProtoRecord(record *models.Record) *pb.Record {
 	if record == nil {
 		return nil
@@ -31,6 +33,7 @@ func ToProtoRecord(record *models.Record) *pb.Record {
 	}
 }
 
+// ToListProtoRecord converts a slice of model records into protobuf records.
 func ToListProtoRecord(list []models.Record) []*pb.Record {
 	if list == nil {
 		return nil
@@ -46,6 +49,7 @@ func ToListProtoRecord(list []models.Record) []*pb.Record {
 	return sliceRecords
 }
 
+// ToListRecord converts a slice of protobuf records into model records.
 func ToListRecord(protoList []*pb.Record) []models.Record {
 	if protoList == nil {
 		return nil

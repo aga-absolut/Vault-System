@@ -9,10 +9,12 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// Logger wraps a zap sugared logger instance.
 type Logger struct {
 	*zap.SugaredLogger
 }
 
+// NewLogger creates a new development logger instance.
 func NewLogger() *Logger {
 	zapLogger, err := zap.NewDevelopment()
 	if err != nil {
@@ -24,6 +26,7 @@ func NewLogger() *Logger {
 	}
 }
 
+// UnaryServerInterceptor logs information about incoming gRPC requests.
 func (l *Logger) UnaryServerInterceptor() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		start := time.Now()

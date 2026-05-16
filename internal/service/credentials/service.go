@@ -11,6 +11,7 @@ import (
 	"github.com/aga-absolut/Vault-System/internal/storage/postgres"
 )
 
+// Service defines methods for managing encrypted user data.
 type Service interface {
 	SetData(context.Context, *models.Record) error
 	GetData(context.Context, string, string) (*models.Record, error)
@@ -19,12 +20,14 @@ type Service interface {
 	GetListMeta(context.Context, string) ([]string, error)
 }
 
+// service implements credential management business logic.
 type service struct {
 	log    *logger.Logger
 	db     postgres.Storage
 	cipher *crypto.Cipher
 }
 
+// NewService creates a new credentials service instance.
 func NewService(log *logger.Logger, db postgres.Storage, cipher *crypto.Cipher) Service {
 	return &service{
 		log:    log,
@@ -33,6 +36,7 @@ func NewService(log *logger.Logger, db postgres.Storage, cipher *crypto.Cipher) 
 	}
 }
 
+// SetData encrypts and stores user data.
 func (s *service) SetData(ctx context.Context, record *models.Record) error {
 	encrypted, err := s.cipher.Encrypt(record.Data)
 	if err != nil {
@@ -52,6 +56,7 @@ func (s *service) SetData(ctx context.Context, record *models.Record) error {
 	return nil
 }
 
+// GetData retrieves and decrypts user data.
 func (s *service) GetData(ctx context.Context, userName, meta string) (*models.Record, error) {
 	record, err := s.db.GetData(ctx, userName, meta)
 	if err != nil {
@@ -72,6 +77,7 @@ func (s *service) GetData(ctx context.Context, userName, meta string) (*models.R
 	return record, nil
 }
 
+// GetListMeta returns a list of user metadata records.
 func (s *service) GetListMeta(ctx context.Context, userName string) ([]string, error) {
 	records, err := s.db.GetListMeta(ctx, userName)
 	if err != nil {
@@ -82,6 +88,7 @@ func (s *service) GetListMeta(ctx context.Context, userName string) ([]string, e
 	return records, nil
 }
 
+// UpdateData encrypts and updates existing user data.
 func (s *service) UpdateData(ctx context.Context, record *models.Record) error {
 	encrypted, err := s.cipher.Encrypt(record.Data)
 	if err != nil {
@@ -99,6 +106,7 @@ func (s *service) UpdateData(ctx context.Context, record *models.Record) error {
 	return nil
 }
 
+// DeleteData removes user data from storage.
 func (s *service) DeleteData(ctx context.Context, userName, meta string) error {
 	if err := s.db.DeleteData(ctx, userName, meta); err != nil {
 		if errors.Is(err, errs.ErrRecordNotFound) {

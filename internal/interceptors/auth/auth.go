@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+// UnaryServerInterceptor validates JWT tokens for protected gRPC methods.
 func UnaryServerInterceptor(tokenProvider token.Provider) grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		if isPublicMethod(info.FullMethod) {
@@ -38,6 +39,7 @@ func UnaryServerInterceptor(tokenProvider token.Provider) grpc.UnaryServerInterc
 	}
 }
 
+// isPublicMethod checks whether the gRPC method requires authentication.
 func isPublicMethod(fullMethod string) bool {
 	public := []string{
 		"/vault.VaultSystem/Register",

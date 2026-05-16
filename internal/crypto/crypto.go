@@ -9,10 +9,12 @@ import (
 	"strings"
 )
 
+// Cipher provides AES encryption and decryption methods.
 type Cipher struct {
 	key []byte
 }
 
+// NewCipher creates a new cipher instance with a 32-byte AES key.
 func NewCipher(keyStr string) *Cipher {
 	keyStr = strings.TrimSpace(keyStr)
 	decoded, err := base64.StdEncoding.DecodeString(keyStr)
@@ -27,6 +29,7 @@ func NewCipher(keyStr string) *Cipher {
 	return &Cipher{key: decoded}
 }
 
+// Encrypt encrypts data using AES-GCM encryption.
 func (c *Cipher) Encrypt(data []byte) ([]byte, error) {
 	aesblock, err := aes.NewCipher(c.key)
 	if err != nil {
@@ -49,6 +52,7 @@ func (c *Cipher) Encrypt(data []byte) ([]byte, error) {
 	return combined, nil
 }
 
+// Decrypt decrypts AES-GCM encrypted data.
 func (c *Cipher) Decrypt(combined []byte) ([]byte, error) {
 	block, err := aes.NewCipher(c.key)
 	if err != nil {
@@ -71,6 +75,7 @@ func (c *Cipher) Decrypt(combined []byte) ([]byte, error) {
 	return data, nil
 }
 
+// generateNonce creates a random nonce for AES-GCM encryption.
 func generateNonce(size int) ([]byte, error) {
 	b := make([]byte, size)
 	_, err := rand.Read(b)

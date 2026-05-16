@@ -13,7 +13,6 @@ func main() {
 	p := tea.NewProgram(tui.InitialModel(client.NewClient(":3200")), tea.WithAltScreen())
 
 	fmt.Println("Запуск GophKeeper TUI...")
-
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Ошибка: %v\n", err)
 		os.Exit(1)

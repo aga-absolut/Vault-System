@@ -23,13 +23,6 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-/*
-Потом
- - написать фул godoc
- - написать докер
- - написать readme док
-*/
-
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()

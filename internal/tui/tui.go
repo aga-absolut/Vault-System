@@ -7,6 +7,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+// UI styles for the TUI application.
 var (
 	titleStyle    = lipgloss.NewStyle().Foreground(lipgloss.Color("#3784ff")).Bold(true)
 	selectedStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#59b4ff")).Bold(true)
@@ -15,8 +16,10 @@ var (
 	successStyle  = lipgloss.NewStyle().Foreground(lipgloss.Color("#59b4ff"))
 )
 
+// state represents the current screen state.
 type state string
 
+// Application states.
 const (
 	stateMenu        state = "menu"
 	stateRegister    state = "register"
@@ -29,10 +32,14 @@ const (
 )
 
 type (
-	errMsg     string
+	// errMsg represents an error message.
+	errMsg string
+
+	// successMsg represents a success message.
 	successMsg string
 )
 
+// registerForm stores all form input fields.
 type registerForm struct {
 	username   textinput.Model
 	password   textinput.Model
@@ -42,6 +49,7 @@ type registerForm struct {
 	focused    int
 }
 
+// model represents the main TUI application state.
 type model struct {
 	client    *client.Client
 	menuItems []string
@@ -52,6 +60,7 @@ type model struct {
 	message string
 }
 
+// InitialModel creates and initializes the TUI model.
 func InitialModel(client *client.Client) model {
 	username := textinput.New()
 	username.Placeholder = "логин"
@@ -95,10 +104,12 @@ func InitialModel(client *client.Client) model {
 	}
 }
 
+// Init initializes the Bubble Tea application.
 func (m model) Init() tea.Cmd {
 	return nil
 }
 
+// Update handles user input and application state updates.
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 
@@ -182,7 +193,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		return m, nil
 	}
 
-	// === ОБНОВЛЕНИЕ ФОРМЫ РЕГИСТРАЦИИ ===
+	// Updates form inputs based on the current state.
 	switch m.state {
 	case stateRegister, stateLogin:
 		switch m.form.focused {
@@ -209,6 +220,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, cmd
 }
 
+// executeAction handles menu item selection.
 func (m *model) executeAction(index int) tea.Cmd {
 	switch index {
 	case 0:
