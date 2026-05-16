@@ -1,0 +1,77 @@
+syntax = "proto3";
+
+package vault;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "./vault_system";
+
+service VaultSystem{
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+  rpc SetData(SetDataRequest) returns (google.protobuf.Empty);
+  rpc GetData(GetDataRequest) returns (GetDataResponse);
+  rpc DeleteData(DeleteDataRequest) returns (google.protobuf.Empty);
+  rpc UpdateData(UpdateDataRequest) returns (google.protobuf.Empty);
+  rpc GetListMeta(google.protobuf.Empty) returns (GetListMetaResponse);
+}
+
+message Record{
+    int64 id = 1;
+    string type = 2;
+    string meta = 3;
+    bytes data = 4;
+}
+
+message UpdateDataRequest{
+  Record data = 2;
+}
+
+
+message RegisterRequest{
+  string name = 1;
+  string password = 2;
+}
+
+message RegisterResponse{
+  string token = 1;
+}
+
+
+message LoginRequest{
+  string name = 1;
+  string password = 2;
+}
+
+message LoginResponse{
+  string token = 1;
+}
+
+
+message SetDataRequest{
+  Record data = 2;
+}
+
+
+message GetDataRequest{
+  string meta = 2;
+}
+
+message GetDataResponse{
+  Record data = 1;
+}
+
+message GetListMetaResponse{
+  repeated string data = 1;
+}
+
+
+message DeleteDataRequest{
+  string meta = 2;
+}
+
+
+
+
+
+
