@@ -48,17 +48,24 @@ Vault-System — Надёжный менеджер паролей
 ├── go.mod
 └── README.md
 ```
-Быстрый старт
+**Быстрый старт**
 1. Клонирование и подготовка
+2. 
 Bashgit clone https://github.com/aga-absolut/Vault-System.git
+
 cd Vault-System
 
 # Пример конфигурации
 cp .env.example .env
+
 cp secret.example.json secret.json
+
 2. Запуск сервера
+   
 go run ./cmd/server/main.go -a :3200 -d "postgres://user:pass@localhost:5432/keeper?sslmode=disable"
-3. Запуск клиента (TUI)
+
+4. Запуск клиента (TUI)
+
 Bashgo run ./cmd/client/main.go
 
 # Сервер
