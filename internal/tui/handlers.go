@@ -111,7 +111,7 @@ func (m *model) getDataHandler() tea.Cmd {
 		if err != nil {
 			return errMsg(err.Error())
 		}
-		return successMsg(fmt.Sprintf("Type: %s\ndata: %s", record.Type, string(record.Data)))
+		return successMsg(fmt.Sprintf("Meta: %s\nType: %s\nData: %s", record.Meta, record.Type, string(record.Data)))
 	}
 }
 

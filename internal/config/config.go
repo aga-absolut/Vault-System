@@ -27,8 +27,8 @@ func MustLoadConfig() *Config {
 		panic(err)
 	}
 
-	flag.StringVar(&cfg.Address, "a", ":3200", "address for strarting server")
-	flag.StringVar(&cfg.DatabaseDSN, "d", "postgres://postgres:absolute_1@localhost:5432/keeper", "value for connecting to database")
+	flag.StringVar(&cfg.Address, "a", ":50051", "address for strarting server")
+	flag.StringVar(&cfg.DatabaseDSN, "d", "postgres://postgres:absolute_1@db:5432/keeper", "value for connecting to database") 
 	flag.Parse()
 
 	if err := ParseConfigFromFile("secret.json", cfg); err != nil {

@@ -1,2 +1,5 @@
 Taskfile.yaml
 secret.json
+.yaml
+.env
+.json

@@ -1,0 +1,41 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    container_name: keeper-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: absolute_1
+      POSTGRES_DB: keeper
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d keeper"]
+      interval: 8s
+      timeout: 4s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: keeper-app
+    restart: unless-stopped
+    environment:
+      - DATABASE_DSN=postgres://postgres:absolute_1@db:5432/keeper
+    env_file:
+      - .env
+    ports:
+      - "50051:50051"
+    depends_on:
+      db:
+        condition: service_healthy
+    tty: true
+    stdin_open: true
+
+volumes:
+  postgres_data:

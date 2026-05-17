@@ -1,0 +1,10 @@
+FROM postgres:16-alpine
+
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=absolute_1
+ENV POSTGRES_DB=keeper
+
+HEALTHCHECK --interval=8s --timeout=4s --retries=6 \
+  CMD pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}
+
+EXPOSE 5432
