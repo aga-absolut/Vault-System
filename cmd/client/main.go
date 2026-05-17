@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	p := tea.NewProgram(tui.InitialModel(client.NewClient(":3200")), tea.WithAltScreen())
+	p := tea.NewProgram(tui.InitialModel(client.NewClient(":50051")), tea.WithAltScreen())
 
 	fmt.Println("Запуск GophKeeper TUI...")
 	if _, err := p.Run(); err != nil {

@@ -33,7 +33,6 @@ func main() {
 	tokenProvider := token.NewJWTProvider(cfg)
 
 	storage := postgres.NewStorage(cfg)
-	// migrate.MustDownMigrations(cfg, log)
 	migrate.MustInitMigrations(cfg, log)
 
 	credService := credentials.NewService(log, storage, cipher)

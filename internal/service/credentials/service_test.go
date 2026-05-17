@@ -349,7 +349,7 @@ func TestCredentialsService_DeleteData(t *testing.T) {
 		{
 			name:     "error server internal",
 			userName: "absolute_2",
-			meta: "aaa",
+			meta:     "aaa",
 			setupMockDB: func(db *mocks.MockStorage) {
 				db.EXPECT().DeleteData(gomock.Any(), gomock.Any(), gomock.Any()).
 					Return(errs.ErrInternal)
@@ -359,7 +359,7 @@ func TestCredentialsService_DeleteData(t *testing.T) {
 		{
 			name:     "error id not found",
 			userName: "absolute_3",
-			meta: "aaa",
+			meta:     "aaa",
 			setupMockDB: func(db *mocks.MockStorage) {
 				db.EXPECT().DeleteData(gomock.Any(), gomock.Any(), gomock.Any()).
 					Return(errs.ErrRecordNotFound)
